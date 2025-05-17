@@ -77,6 +77,12 @@
         .copy-btn:hover {
             background-color: #0b7dda;
         }
+        .clear-btn {
+            background-color: #f44336;
+        }
+        .clear-btn:hover {
+            background-color: #d32f2f;
+        }
     </style>
 </head>
 <body>
@@ -92,6 +98,7 @@
         <button id="create-btn">Create Table</button>
         <button id="generate-btn" class="copy-btn">Generate HTML</button>
         <button id="copy-btn" class="copy-btn">Copy HTML</button>
+        <button id="clear-btn" class="clear-btn">Clear Table</button>
     </div>
     
     <div id="table-container"></div>
@@ -106,10 +113,12 @@
             const createBtn = document.getElementById('create-btn');
             const generateBtn = document.getElementById('generate-btn');
             const copyBtn = document.getElementById('copy-btn');
+            const clearBtn = document.getElementById('clear-btn');
             const tableContainer = document.getElementById('table-container');
             const output = document.getElementById('output');
             
             let currentTable = null;
+            let savedContent = null;
             
             // Create initial table
             createTable(parseInt(rowsInput.value), parseInt(colsInput.value));
@@ -123,8 +132,26 @@
             
             generateBtn.addEventListener('click', generateHTML);
             copyBtn.addEventListener('click', copyHTML);
+            clearBtn.addEventListener('click', clearTable);
+            
+            function saveCurrentContent() {
+                if (!currentTable) return;
+                
+                savedContent = [];
+                const textareas = currentTable.querySelectorAll('tbody textarea');
+                
+                textareas.forEach(textarea => {
+                    savedContent.push(textarea.value);
+                });
+            }
             
             function createTable(rows, cols) {
+                // Save current content before recreating the table
+                const oldRows = currentTable ? currentTable.querySelectorAll('tbody tr').length : 0;
+                const oldCols = currentTable ? currentTable.querySelectorAll('tbody tr:first-child td').length : 0;
+                
+                saveCurrentContent();
+                
                 tableContainer.innerHTML = '';
                 currentTable = document.createElement('table');
                 
@@ -142,6 +169,7 @@
                 
                 // Create body
                 const tbody = document.createElement('tbody');
+                let contentIndex = 0;
                 
                 for (let i = 0; i < rows; i++) {
                     const tr = document.createElement('tr');
@@ -149,8 +177,14 @@
                     for (let j = 0; j < cols; j++) {
                         const td = document.createElement('td');
                         const textarea = document.createElement('textarea');
-                        // Set minimum height style
                         textarea.style.minHeight = '60px';
+                        
+                        // Restore content if available and within previous dimensions
+                        if (savedContent && i < oldRows && j < oldCols) {
+                            textarea.value = savedContent[contentIndex];
+                            contentIndex++;
+                        }
+                        
                         td.appendChild(textarea);
                         tr.appendChild(td);
                     }
@@ -160,6 +194,18 @@
                 
                 currentTable.appendChild(tbody);
                 tableContainer.appendChild(currentTable);
+                savedContent = null; // Clear saved content after use
+            }
+            
+            function clearTable() {
+                if (!currentTable) return;
+                
+                const textareas = currentTable.querySelectorAll('textarea');
+                textareas.forEach(textarea => {
+                    textarea.value = '';
+                });
+                
+                output.textContent = '';
             }
             
             function generateHTML() {
