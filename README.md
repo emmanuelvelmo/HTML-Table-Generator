@@ -1,4 +1,4 @@
-# HTML-Table-Generator
+# HTML Table Generator
 <p align="left">
   <strong>-</strong>
   <br/>
