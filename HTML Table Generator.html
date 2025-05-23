@@ -1,9 +1,10 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HTML Table Generator</title>
+    <title>Generador de Tablas HTML</title>
+
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -12,20 +13,26 @@
             padding: 20px;
             line-height: 1.6;
         }
+
         .controls {
             background-color: #f5f5f5;
             padding: 15px;
             border-radius: 5px;
             margin-bottom: 20px;
         }
-        .controls label, .controls input, .controls button {
+
+        .controls label,
+        .controls input,
+        .controls button {
             margin-right: 10px;
             margin-bottom: 10px;
         }
+
         input[type="number"] {
             width: 60px;
             padding: 5px;
         }
+
         button {
             padding: 5px 15px;
             background-color: #4CAF50;
@@ -34,35 +41,41 @@
             border-radius: 4px;
             cursor: pointer;
         }
+
         button:hover {
             background-color: #45a049;
         }
+
         #table-container {
             overflow-x: auto;
             margin-bottom: 20px;
         }
+
         table {
             border-collapse: collapse;
             width: 100%;
             margin-bottom: 20px;
         }
+
         th, td {
             border: 1px solid #ddd;
             padding: 8px;
             text-align: left;
         }
+
         th {
             background-color: #f2f2f2;
         }
+
         textarea {
             width: 100%;
             min-height: 60px;
-            height: 60px;
             resize: vertical;
             padding: 5px;
             box-sizing: border-box;
             border: 1px solid #ccc;
         }
+
         #output {
             background-color: #f9f9f9;
             border: 1px solid #ddd;
@@ -71,179 +84,195 @@
             white-space: pre-wrap;
             font-family: monospace;
         }
+
         .copy-btn {
             background-color: #2196F3;
         }
+
         .copy-btn:hover {
             background-color: #0b7dda;
         }
+
         .clear-btn {
             background-color: #f44336;
         }
+
         .clear-btn:hover {
             background-color: #d32f2f;
         }
     </style>
 </head>
+
 <body>
-    <h1>HTML Table Generator</h1>
-    
+
+    <h1>Generador de Tablas HTML</h1>
+
     <div class="controls">
-        <label for="rows">Rows:</label>
+
+        <label for="rows">Filas:</label>
         <input type="number" id="rows" min="1" value="3">
-        
-        <label for="cols">Columns:</label>
+
+        <label for="cols">Columnas:</label>
         <input type="number" id="cols" min="1" value="3">
-        
-        <button id="create-btn">Create Table</button>
-        <button id="generate-btn" class="copy-btn">Generate HTML</button>
-        <button id="copy-btn" class="copy-btn">Copy HTML</button>
-        <button id="clear-btn" class="clear-btn">Clear Table</button>
+
+        <button id="create-btn">Crear Tabla</button>
+        <button id="generate-btn" class="copy-btn">Generar HTML</button>
+        <button id="copy-btn" class="copy-btn">Copiar HTML</button>
+        <button id="clear-btn" class="clear-btn">Limpiar Tabla</button>
+
     </div>
-    
+
     <div id="table-container"></div>
-    
-    <h2>HTML Code:</h2>
+
+    <h2>Código HTML:</h2>
     <div id="output"></div>
-    
+
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            const rowsInput = document.getElementById('rows');
-            const colsInput = document.getElementById('cols');
-            const createBtn = document.getElementById('create-btn');
-            const generateBtn = document.getElementById('generate-btn');
-            const copyBtn = document.getElementById('copy-btn');
-            const clearBtn = document.getElementById('clear-btn');
-            const tableContainer = document.getElementById('table-container');
-            const output = document.getElementById('output');
-            
+
+            // Referencias a elementos del DOM
+            const rowsInput     = document.getElementById('rows');
+            const colsInput     = document.getElementById('cols');
+            const createBtn     = document.getElementById('create-btn');
+            const generateBtn   = document.getElementById('generate-btn');
+            const copyBtn       = document.getElementById('copy-btn');
+            const clearBtn      = document.getElementById('clear-btn');
+            const tableContainer= document.getElementById('table-container');
+            const output        = document.getElementById('output');
+
             let currentTable = null;
             let savedContent = null;
-            
-            // Create initial table
+
+            // Crear tabla inicial al cargar la página
             createTable(parseInt(rowsInput.value), parseInt(colsInput.value));
-            
-            // Event listeners
+
+            // Eventos
             createBtn.addEventListener('click', function() {
                 const rows = parseInt(rowsInput.value);
                 const cols = parseInt(colsInput.value);
+
                 createTable(rows, cols);
             });
-            
+
             generateBtn.addEventListener('click', generateHTML);
             copyBtn.addEventListener('click', copyHTML);
             clearBtn.addEventListener('click', clearTable);
-            
+
+            // Guardar contenido actual de los textareas antes de regenerar tabla
             function saveCurrentContent() {
                 if (!currentTable) return;
-                
+
                 savedContent = [];
+
                 const textareas = currentTable.querySelectorAll('tbody textarea');
-                
+
                 textareas.forEach(textarea => {
                     savedContent.push(textarea.value);
                 });
             }
-            
+
+            // Crear tabla con la cantidad de filas y columnas indicadas
             function createTable(rows, cols) {
-                // Save current content before recreating the table
+
                 const oldRows = currentTable ? currentTable.querySelectorAll('tbody tr').length : 0;
                 const oldCols = currentTable ? currentTable.querySelectorAll('tbody tr:first-child td').length : 0;
-                
+
                 saveCurrentContent();
-                
+
                 tableContainer.innerHTML = '';
                 currentTable = document.createElement('table');
-                
-                // Create headers (empty)
+
+                // Crear encabezados vacíos
                 const thead = document.createElement('thead');
                 const headerRow = document.createElement('tr');
-                
+
                 for (let i = 0; i < cols; i++) {
                     const th = document.createElement('th');
                     headerRow.appendChild(th);
                 }
-                
+
                 thead.appendChild(headerRow);
                 currentTable.appendChild(thead);
-                
-                // Create body
+
+                // Crear cuerpo de la tabla
                 const tbody = document.createElement('tbody');
                 let contentIndex = 0;
-                
+
                 for (let i = 0; i < rows; i++) {
                     const tr = document.createElement('tr');
-                    
+
                     for (let j = 0; j < cols; j++) {
                         const td = document.createElement('td');
                         const textarea = document.createElement('textarea');
+
                         textarea.style.minHeight = '60px';
-                        
-                        // Restore content if available and within previous dimensions
+
+                        // Restaurar contenido guardado si es posible
                         if (savedContent && i < oldRows && j < oldCols) {
                             textarea.value = savedContent[contentIndex];
                             contentIndex++;
                         }
-                        
+
                         td.appendChild(textarea);
                         tr.appendChild(td);
                     }
-                    
+
                     tbody.appendChild(tr);
                 }
-                
+
                 currentTable.appendChild(tbody);
                 tableContainer.appendChild(currentTable);
-                savedContent = null; // Clear saved content after use
+
+                savedContent = null;
             }
-            
+
+            // Limpiar contenido de la tabla
             function clearTable() {
                 if (!currentTable) return;
-                
+
                 const textareas = currentTable.querySelectorAll('textarea');
+
                 textareas.forEach(textarea => {
                     textarea.value = '';
                 });
-                
+
                 output.textContent = '';
             }
-            
+
+            // Generar el código HTML del tbody (solo datos, sin encabezado)
             function generateHTML() {
                 if (!currentTable) return;
-                
-                // Create a copy of tbody for HTML generation (we omit thead)
-                const tbody = currentTable.querySelector('tbody');
+
+                const tbody     = currentTable.querySelector('tbody');
                 const tbodyCopy = tbody.cloneNode(true);
                 const textareas = tbodyCopy.querySelectorAll('textarea');
-                
-                // Replace textareas with their content (keeping line breaks)
+
                 textareas.forEach(textarea => {
                     const content = textarea.value.replace(/\n/g, '<br>');
-                    const parent = textarea.parentNode;
+                    const parent  = textarea.parentNode;
+
                     parent.removeChild(textarea);
                     parent.innerHTML = content;
                 });
-                
-                // Generate HTML with just the tbody
-                const html = tbodyCopy.outerHTML;
-                output.textContent = html;
+
+                output.textContent = tbodyCopy.outerHTML;
             }
-            
+
+            // Copiar el código HTML generado al portapapeles
             function copyHTML() {
                 if (!output.textContent) {
                     generateHTML();
                 }
-                
+
                 navigator.clipboard.writeText(output.textContent)
                     .then(() => {
-                        alert('HTML code copied to clipboard');
+                        alert('Código HTML copiado al portapapeles');
                     })
                     .catch(err => {
-                        console.error('Error copying: ', err);
-                        // Fallback for older browsers
+                        console.error('Error al copiar: ', err);
                         output.select();
                         document.execCommand('copy');
-                        alert('HTML code copied to clipboard');
+                        alert('Código HTML copiado al portapapeles');
                     });
             }
         });
