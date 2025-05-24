@@ -1,5 +1,5 @@
 # HTML Table Generator
-This script resizes multiple JPG files from a gallery folder (which has to be called "imagedir" on the Desktop) while maintaining the original orientation of the image (portrait or landscape). This script automatically performs a centered crop to fit a 16:9 or 9:16 aspect ratio, then resizes images to a resolution of 1920×1080 (horizontal) or 1080×1920 (vertical) depending on the orientation initial of the image.
+HTML Table Generator with adjustable rows and columns for creating clear tabular structures that chatbots can properly interpret. This web tool solves the problem of sharing tabular data with AI models, since copying tables as plain text loses the row/column relationships. With a simple interface, you can visually design tables and get clean HTML code that preserves data structure, allowing chatbots like ChatGPT or Gemini to perfectly understand the information and perform accurate conversions or analysis. Perfect for developers, analysts, and anyone needing to efficiently pass tabular data to AI systems.
 
 <p align="left">
   <br/>
