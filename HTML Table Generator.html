@@ -1,280 +1,331 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang = "en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Generador de Tablas HTML</title>
+    <meta charset = "UTF-8">
+    <meta name = "viewport" content = "width = device-width, initial-scale = 1.0">
+    <title>HTML Table Generator</title>
 
+    <!-- CSS -->
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 20px;
-            line-height: 1.6;
+        /* Estilos para el cuerpo del documento */
+        body
+        {
+            font-family: Arial, sans-serif; /* Fuente */
+            max-width: 90%; /* Máximo ancho relativo */
+            margin: 0 auto; /* Centrar horizontalmente el body dentro de la ventana */
+            padding: 10px; /* Espacio interno alrededor del contenido para que no toque los bordes */
+            line-height: 1.0; /* Altura de línea */
         }
 
-        .controls {
-            background-color: #f5f5f5;
-            padding: 15px;
-            border-radius: 5px;
-            margin-bottom: 20px;
+        /* Estilos para controles: inputs y botones */
+        .controls
+        {
+            background-color: #f5f5f5; /* Fondo gris claro para distinguir el área de controles */
+            padding: 10px; /* Espacio interno para separar contenido de los bordes */
+            border-radius: 5px; /* Bordes redondeados para mejor estética */
+            margin-bottom: 20px; /* Separación inferior respecto al siguiente elemento */
         }
 
+        /* Estilos para etiquetas, inputs y botones dentro de controles */
         .controls label,
         .controls input,
-        .controls button {
-            margin-right: 10px;
-            margin-bottom: 10px;
+        .controls button
+        {
+            margin-right: 10px; /* Margen derecho para separar elementos horizontalmente */
+            margin-bottom: 0px; /* Margen inferior para separar verticalmente */
         }
 
-        input[type="number"] {
-            width: 60px;
-            padding: 5px;
+        /* Estilos para inputs de tipo número */
+        input[type = "number"]
+        {
+            width: 60px; /* Ancho fijo para los campos numéricos para mantener uniformidad */
+            padding: 5px; /* Espacio interno para que el texto no esté pegado al borde */
         }
 
-        button {
-            padding: 5px 15px;
-            background-color: #4CAF50;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
+        /* Estilos generales para todos los botones */
+        button
+        {
+            padding: 5px 15px; /* Espaciado interno para hacer botones más grandes y cómodos */
+            background-color: #4CAF50; /* Color de fondo verde para destacar botones principales */
+            color: white; /* Texto blanco para contraste */
+            border: none; /* Sin borde por defecto */
+            border-radius: 5px; /* Bordes redondeados */
+            cursor: pointer; /* Cambia cursor al pasar sobre el botón para indicar que es clickeable */
         }
 
-        button:hover {
-            background-color: #45a049;
+        /* Hover para botones */
+        button:hover
+        {
+            background-color: #45a049; /* Color más oscuro al pasar el cursor para efecto visual */
         }
 
-        #table-container {
-            overflow-x: auto;
-            margin-bottom: 20px;
+        /* Contenedor de la tabla con scroll horizontal */
+        #contenedor-tabla
+        {
+            overflow-x: auto; /* Permite desplazamiento horizontal si la tabla es muy ancha */
+            margin-bottom: 20px; /* Separación inferior para espacio visual */
         }
 
-        table {
-            border-collapse: collapse;
-            width: 100%;
-            margin-bottom: 20px;
+        /* Estilos generales para la tabla */
+        table
+        {
+            border-collapse: collapse; /* Quitar espacios entre bordes de celdas */
+            width: 100%; /* La tabla ocupa todo el ancho del contenedor */
+            margin-bottom: 0px; /* Espacio inferior para separar de elementos siguientes */
         }
 
-        th, td {
-            border: 1px solid #ddd;
-            padding: 8px;
-            text-align: left;
+        /* Bordes y padding de encabezados y celdas */
+        th, td
+        {
+            border: 1px solid #ddd; /* Bordes grises claros para delimitar celdas */
+            padding: 5px; /* Espacio interno para que el contenido no esté pegado */
+            text-align: left; /* Alineación del texto a la izquierda */
         }
 
-        th {
-            background-color: #f2f2f2;
+        /* Estilo específico para encabezados */
+        th
+        {
+            background-color: #f2f2f2; /* Fondo gris claro para distinguir encabezados */
         }
 
-        textarea {
-            width: 100%;
-            min-height: 60px;
-            resize: vertical;
-            padding: 5px;
-            box-sizing: border-box;
-            border: 1px solid #ccc;
+        /* Estilos para los textarea dentro de la tabla */
+        textarea
+        {
+            width: 100%; /* Ocupa todo el ancho disponible dentro de la celda */
+            min-height: 60px; /* Altura mínima para que no quede muy pequeño */
+            resize: vertical; /* Permitir solo cambiar la altura (verticalmente) */
+            padding: 5px; /* Espacio interno para separar texto de bordes */
+            box-sizing: border-box; /* Incluye padding y borde en el ancho total para evitar desbordes */
+            border: 1px solid #ccc; /* Borde gris claro para delimitar área */
         }
 
-        #output {
-            background-color: #f9f9f9;
-            border: 1px solid #ddd;
-            padding: 15px;
-            border-radius: 5px;
-            white-space: pre-wrap;
-            font-family: monospace;
+        /* Contenedor para mostrar el código HTML generado */
+        #salida
+        {
+            background-color: #f9f9f9; /* Fondo muy claro para resaltar área de código generado */
+            border: 1px solid #ddd; /* Borde gris claro */
+            padding: 10px; /* Espacio interno para mejor lectura */
+            border-radius: 5px; /* Bordes redondeados para estética */
+            white-space: pre-wrap; /* Permite que el texto se ajuste en varias líneas sin desbordar */
+            font-family: monospace; /* Fuente monoespaciada para código */
         }
 
-        .copy-btn {
-            background-color: #2196F3;
+        /* Estilo para los botones de copiar y generar */
+        .copy-btn
+        {
+            background-color: #2196F3; /* Fondo azul para botones de copiar y generar */
         }
 
-        .copy-btn:hover {
-            background-color: #0b7dda;
+        /* Hover para los botones de copiar y generar */
+        .copy-btn:hover
+        {
+            background-color: #0b7dda; /* Azul más oscuro al pasar el cursor */
         }
 
-        .clear-btn {
-            background-color: #f44336;
+        /* Estilo para el botón de limpiar */
+        .clear-btn
+        {
+            background-color: #f44336; /* Fondo rojo para botón de limpiar */
         }
 
-        .clear-btn:hover {
-            background-color: #d32f2f;
+        /* Hover para el botón de limpiar */
+        .clear-btn:hover
+        {
+            background-color: #d32f2f; /* Rojo más oscuro al pasar el cursor */
         }
     </style>
 </head>
 
 <body>
+    <!-- Título principal -->
+    <h1>HTML Table Generator</h1>
 
-    <h1>Generador de Tablas HTML</h1>
+    <!-- Contenedor principal para controles de filas, columnas y botones -->
+    <div class = "controls">
+        <label for = "filas">Rows:</label> <!-- Etiqueta para input filas -->
+        <input type = "number" id = "filas" min = "1" value = "3"> <!-- Input para cantidad de filas -->
 
-    <div class="controls">
+        <label for = "columnas">Columns:</label> <!-- Etiqueta para input columnas -->
+        <input type = "number" id = "columnas" min = "1" value = "3"> <!-- Input para cantidad de columnas -->
 
-        <label for="rows">Filas:</label>
-        <input type="number" id="rows" min="1" value="3">
-
-        <label for="cols">Columnas:</label>
-        <input type="number" id="cols" min="1" value="3">
-
-        <button id="create-btn">Crear Tabla</button>
-        <button id="generate-btn" class="copy-btn">Generar HTML</button>
-        <button id="copy-btn" class="copy-btn">Copiar HTML</button>
-        <button id="clear-btn" class="clear-btn">Limpiar Tabla</button>
-
+        <!-- Botones principales -->
+        <button id = "crear-btn">Create Table</button> <!-- Botón para crear tabla -->
+        <button id = "generar-btn" class = "copy-btn">Generate HTML</button> <!-- Botón para generar código -->
+        <button id = "copiar-btn" class = "copy-btn">Copy HTML</button> <!-- Botón para copiar código -->
+        <button id = "limpiar-btn" class = "clear-btn">Clear Table</button> <!-- Botón para limpiar tabla -->
     </div>
 
-    <div id="table-container"></div>
+    <!-- Contenedor donde se insertará la tabla -->
+    <div id = "contenedor-tabla"></div>
 
-    <h2>Código HTML:</h2>
-    <div id="output"></div>
+    <!-- Título para sección de código generado -->
+    <h2>HTML Code:</h2>
 
+    <!-- Área donde se mostrará el código HTML generado -->
+    <div id = "salida"></div>
+
+    <!-- JAVASCRIPT -->
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function()
+        {
+            // Referencias a elementos del DOM (Document Object Model)
+            const inputFilas  =  document.getElementById('filas'); /* Input filas */
+            const inputColumnas  =  document.getElementById('columnas'); /* Input columnas */
+            const botonCrear  =  document.getElementById('crear-btn'); /* Botón crear tabla */
+            const botonGenerar  =  document.getElementById('generar-btn'); /* Botón generar código */
+            const botonCopiar  =  document.getElementById('copiar-btn'); /* Botón copiar código */
+            const botonLimpiar  =  document.getElementById('limpiar-btn'); /* Botón limpiar tabla */
+            const contenedorTabla  =  document.getElementById('contenedor-tabla'); /* Contenedor tabla */
+            const salidaCodigo  =  document.getElementById('salida'); /* Área salida código */
 
-            // Referencias a elementos del DOM
-            const rowsInput     = document.getElementById('rows');
-            const colsInput     = document.getElementById('cols');
-            const createBtn     = document.getElementById('create-btn');
-            const generateBtn   = document.getElementById('generate-btn');
-            const copyBtn       = document.getElementById('copy-btn');
-            const clearBtn      = document.getElementById('clear-btn');
-            const tableContainer= document.getElementById('table-container');
-            const output        = document.getElementById('output');
-
-            let currentTable = null;
-            let savedContent = null;
-
-            // Crear tabla inicial al cargar la página
-            createTable(parseInt(rowsInput.value), parseInt(colsInput.value));
-
-            // Eventos
-            createBtn.addEventListener('click', function() {
-                const rows = parseInt(rowsInput.value);
-                const cols = parseInt(colsInput.value);
-
-                createTable(rows, cols);
-            });
-
-            generateBtn.addEventListener('click', generateHTML);
-            copyBtn.addEventListener('click', copyHTML);
-            clearBtn.addEventListener('click', clearTable);
+            let tablaActual  =  null; /* Variable para guardar la tabla actual */
+            let contenidoGuardado  =  null; /* Variable para guardar contenido de textareas */
 
             // Guardar contenido actual de los textareas antes de regenerar tabla
-            function saveCurrentContent() {
-                if (!currentTable) return;
-
-                savedContent = [];
-
-                const textareas = currentTable.querySelectorAll('tbody textarea');
-
-                textareas.forEach(textarea => {
-                    savedContent.push(textarea.value);
+            function guardarContenidoActual()
+            {
+                if (!tablaActual) return;
+                contenidoGuardado  =  [];
+                const textareas  =  tablaActual.querySelectorAll('tbody textarea');
+                textareas.forEach(textarea  =>
+                {
+                    contenidoGuardado.push(textarea.value); /* Guardar valor */
                 });
             }
 
             // Crear tabla con la cantidad de filas y columnas indicadas
-            function createTable(rows, cols) {
+            function crearTabla(filas, columnas)
+            {
+                const filasViejas  =  tablaActual ? tablaActual.querySelectorAll('tbody tr').length : 0; /* Filas actuales */
+                const columnasViejas  =  tablaActual ? tablaActual.querySelectorAll('tbody tr:first-child td').length : 0; /* Columnas actuales */
 
-                const oldRows = currentTable ? currentTable.querySelectorAll('tbody tr').length : 0;
-                const oldCols = currentTable ? currentTable.querySelectorAll('tbody tr:first-child td').length : 0;
+                guardarContenidoActual(); /* Guardar contenido antes de borrar */
 
-                saveCurrentContent();
+                contenedorTabla.innerHTML  =  ''; /* Vaciar contenedor */
+                tablaActual  =  document.createElement('table'); /* Crear tabla nueva */
 
-                tableContainer.innerHTML = '';
-                currentTable = document.createElement('table');
+                // Crear encabezado
+                const thead  =  document.createElement('thead');
+                const filaEncabezado  =  document.createElement('tr');
 
-                // Crear encabezados vacíos
-                const thead = document.createElement('thead');
-                const headerRow = document.createElement('tr');
-
-                for (let i = 0; i < cols; i++) {
-                    const th = document.createElement('th');
-                    headerRow.appendChild(th);
+                // Bucle para crear las celdas de encabezado (th) según el número de columnas
+                for (let i  =  0; i < columnas; i++)
+                {
+                    const th  =  document.createElement('th');
+                    filaEncabezado.appendChild(th); /* Agregar celda encabezado */
                 }
 
-                thead.appendChild(headerRow);
-                currentTable.appendChild(thead);
+                thead.appendChild(filaEncabezado); /* Agregar fila al thead */
+                tablaActual.appendChild(thead); /* Agregar thead a tabla */
 
-                // Crear cuerpo de la tabla
-                const tbody = document.createElement('tbody');
-                let contentIndex = 0;
+                // Crear cuerpo
+                const tbody  =  document.createElement('tbody');
+                let indiceContenido  =  0;
+                
+                // Bucle principal para crear cada fila de la tabla
+                for (let i  =  0; i < filas; i++)
+                {
+                    const tr  =  document.createElement('tr');
 
-                for (let i = 0; i < rows; i++) {
-                    const tr = document.createElement('tr');
+                    for (let j  =  0; j < columnas; j++)
+                    {
+                        const td  =  document.createElement('td');
+                        const textarea  =  document.createElement('textarea');
 
-                    for (let j = 0; j < cols; j++) {
-                        const td = document.createElement('td');
-                        const textarea = document.createElement('textarea');
+                        textarea.style.minHeight  =  '60px'; /* Altura mínima */
 
-                        textarea.style.minHeight = '60px';
-
-                        // Restaurar contenido guardado si es posible
-                        if (savedContent && i < oldRows && j < oldCols) {
-                            textarea.value = savedContent[contentIndex];
-                            contentIndex++;
+                        if (contenidoGuardado && i < filasViejas && j < columnasViejas)
+                        {
+                            textarea.value  =  contenidoGuardado[indiceContenido]; /* Restaurar valor */
+                            indiceContenido++;
                         }
 
-                        td.appendChild(textarea);
-                        tr.appendChild(td);
+                        td.appendChild(textarea); /* Agregar textarea a celda */
+                        tr.appendChild(td); /* Agregar celda a fila */
                     }
 
-                    tbody.appendChild(tr);
+                    tbody.appendChild(tr); /* Agregar fila al cuerpo */
                 }
 
-                currentTable.appendChild(tbody);
-                tableContainer.appendChild(currentTable);
+                tablaActual.appendChild(tbody); /* Agregar cuerpo a tabla */
+                contenedorTabla.appendChild(tablaActual); /* Agregar tabla al contenedor */
 
-                savedContent = null;
+                contenidoGuardado  =  null; /* Limpiar contenido guardado */
             }
 
             // Limpiar contenido de la tabla
-            function clearTable() {
-                if (!currentTable) return;
+            function limpiarTabla()
+            {
+                if (!tablaActual) return;
 
-                const textareas = currentTable.querySelectorAll('textarea');
+                const textareas  =  tablaActual.querySelectorAll('textarea');
 
-                textareas.forEach(textarea => {
-                    textarea.value = '';
+                textareas.forEach(textarea  =>
+                {
+                    textarea.value  =  ''; /* Vaciar textarea */
                 });
 
-                output.textContent = '';
+                salidaCodigo.textContent  =  ''; /* Limpiar salida */
             }
 
-            // Generar el código HTML del tbody (solo datos, sin encabezado)
-            function generateHTML() {
-                if (!currentTable) return;
+            // Generar HTML desde el contenido de la tabla
+            function generarHTML()
+            {
+                if (!tablaActual) return;
 
-                const tbody     = currentTable.querySelector('tbody');
-                const tbodyCopy = tbody.cloneNode(true);
-                const textareas = tbodyCopy.querySelectorAll('textarea');
+                const tbody  =  tablaActual.querySelector('tbody');
+                const copiaTbody  =  tbody.cloneNode(true);
+                const textareas  =  copiaTbody.querySelectorAll('textarea');
 
-                textareas.forEach(textarea => {
-                    const content = textarea.value.replace(/\n/g, '<br>');
-                    const parent  = textarea.parentNode;
+                textareas.forEach(textarea  =>
+                {
+                    const contenido  =  textarea.value.replace(/\n/g, '<br>'); /* Reemplazar saltos por <br> */
+                    const padre  =  textarea.parentNode;
 
-                    parent.removeChild(textarea);
-                    parent.innerHTML = content;
+                    padre.removeChild(textarea); /* Eliminar textarea */
+                    padre.innerHTML  =  contenido; /* Insertar contenido como HTML */
                 });
 
-                output.textContent = tbodyCopy.outerHTML;
+                salidaCodigo.textContent  =  copiaTbody.outerHTML; /* Mostrar HTML generado */
             }
 
-            // Copiar el código HTML generado al portapapeles
-            function copyHTML() {
-                if (!output.textContent) {
-                    generateHTML();
+            // Copiar código HTML al portapapeles
+            function copiarHTML()
+            {
+                if (!salidaCodigo.textContent)
+                {
+                    generarHTML(); /* Generar si aún no existe */
                 }
 
-                navigator.clipboard.writeText(output.textContent)
-                    .then(() => {
-                        alert('Código HTML copiado al portapapeles');
-                    })
-                    .catch(err => {
-                        console.error('Error al copiar: ', err);
-                        output.select();
-                        document.execCommand('copy');
-                        alert('Código HTML copiado al portapapeles');
-                    });
+                navigator.clipboard.writeText(salidaCodigo.textContent)
+                .then(()  =>
+                {
+                    alert('HTML code copied to clipboard');
+                })
+                .catch(err  =>
+                {
+                    console.error('Error copying: ', err);
+                    salidaCodigo.select();
+                    document.execCommand('copy');
+                    alert('HTML code copied to clipboard');
+                });
             }
+
+            // Eventos para botones
+            botonCrear.addEventListener('click', function()
+            {
+                const filas  =  parseInt(inputFilas.value); /* Leer filas */
+                const columnas  =  parseInt(inputColumnas.value); /* Leer columnas */
+                crearTabla(filas, columnas); /* Crear tabla */
+            });
+
+            botonGenerar.addEventListener('click', generarHTML); /* Evento generar código */
+            botonCopiar.addEventListener('click', copiarHTML); /* Evento copiar código */
+            botonLimpiar.addEventListener('click', limpiarTabla); /* Evento limpiar tabla */
+            
+            // Crear tabla inicial al cargar la página con valores por defecto
+            crearTabla(parseInt(inputFilas.value), parseInt(inputColumnas.value));
         });
     </script>
 </body>
